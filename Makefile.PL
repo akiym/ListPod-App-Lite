@@ -2,6 +2,7 @@ use inc::Module::Install;
 name 'ListPod-App-Lite';
 all_from 'lib/ListPod/App/Lite.pm';
 
+requires 'WWW::YouTube::Download';
 requires 'LWP::UserAgent';
 requires 'Text::MicroTemplate';
 requires 'Plack::Runner';
