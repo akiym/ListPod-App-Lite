@@ -3,42 +3,20 @@ use strict;
 use warnings;
 use Carp ();
 use Encode;
+use WWW::YouTube::Download;
 
 sub new {
     my ( $class, %opt ) = @_;
     Carp::croak("ua parameter is required!") unless $opt{ua};
     my $self = bless { ua => $opt{ua} }, $class;
+    $self->{client} = WWW::YouTube::Download->new;
     $self;
 }
 
 sub mp4_url {
     my ($self, $video_id) = @_;
-    my $fmt = '18'; #mp4 default
-    my $token = $self->token($video_id);
-    my $ua = $self->{ua};
-    return unless $token;
-    my $url =
-        "http://www.youtube.com/get_video?video_id=$video_id&t=$token&fmt=$fmt";
-    $ua->max_redirect(0);
-    my $res = $ua->get( $url );
-    return $res->headers->header('Location');
-}
-
-sub token {
-    my ($self, $video_id) = @_;
-    my $url = "http://www.youtube.com/watch?v=$video_id";
-    $self->{ua}->get($url);
-    $url = "http://www.youtube.com/get_video_info?video_id=$video_id";
-    my $res     = $self->{ua}->get($url);
-    my $content = $res->content;
-    if ( $content =~ m!&token=([^&]+)&! ) {
-        return $1;
-    }
-    else {
-        #XXX TODO: Check status code.
-        warn $res->status_line . "\n";
-        return;
-    }
+    my $url = $self->{client}->get_video_url($video_id);
+    return $url;
 }
 
 sub playlist {
