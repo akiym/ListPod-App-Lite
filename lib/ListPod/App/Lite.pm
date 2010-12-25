@@ -75,7 +75,7 @@ sub handle_video_anyevent {
     require AnyEvent::HTTP;
     my $headers = $self->{ua}->http_headers_raw;
     my $cv      = AnyEvent->condvar;
-    warn "Donwloading ... $url\n";
+    warn "Downloading ... $url\n";
     AnyEvent::HTTP::http_get(
         $url,
         headers => $headers,
