@@ -16,7 +16,7 @@ sub new {
 sub mp4_url {
     my ($self, $video_id) = @_;
     my $fmt = '18'; #mp4 default
-    my $url = $self->{client}->_get_video_url_map($video_id)->{$fmt}{url};
+    my $url = $self->{client}->prepare_download($video_id)->{video_url_map}{$fmt}{url};
     return $url;
 }
 
