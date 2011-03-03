@@ -6,8 +6,10 @@ use base ('LWP::UserAgent');
 sub new {
     my ( $class, %opt ) = @_;
     my $self = bless {}, $class;
-    my $cookie_jar = $self->_cookie_jar($opt{cookie_file}) if $opt{cookie_file};
-    $self->cookie_jar( $cookie_jar );
+    if ($opt{cookie_file}) {
+        my $cookie_jar = $self->_cookie_jar($opt{cookie_file});
+        $self->cookie_jar( $cookie_jar );
+    }
     $self;
 }
 
@@ -53,7 +55,7 @@ sub _safari_cookie_jar {
     require HTTP::Cookies;
     require Mac::PropertyList;
     my $cookie_jar = HTTP::Cookies->new;
-    open my ($fh), $file or return;
+    open my $fh, '<', $file or return;
     my $data    = do { local $/; <$fh> };
     my $plist   = Mac::PropertyList::parse_plist($data);
     my $cookies = $plist->value;
